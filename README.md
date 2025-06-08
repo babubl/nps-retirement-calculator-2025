@@ -1,4 +1,4 @@
-[🌐 Live Demo](https://babubl.github.io/your-repo-name/)
+[🌐 Live Demo](https://babubl.github.io/nps-retirement-calculator-2025/)
 
 EPF & NPS Interactive Retirement Calculator
 A modern, interactive web calculator for Indian retirement planning using EPF and NPS.
