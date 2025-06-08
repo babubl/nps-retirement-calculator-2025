@@ -39,6 +39,18 @@
       user-select: none; outline: none;
     }
     .toggle-btn.selected { background: #fff; color: #3949ab; box-shadow: 0 0 20px #3949abaa;}
+    .common-fields-row {
+      display: flex;
+      gap: 32px;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      margin-bottom: 24px;
+    }
+    .common-fields-col {
+      flex: 1 1 48%;
+      min-width: 260px;
+      max-width: 350px;
+    }
     .flex-row {
       display: flex;
       gap: 32px;
@@ -69,13 +81,11 @@
       appearance: textfield;
       -moz-appearance: textfield;
     }
-    /* Remove number input spinners/arrows for Chrome, Safari, Edge, Opera */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
-    /* Remove number input spinners/arrows for Firefox */
     input[type="number"] {
       -moz-appearance: textfield;
     }
@@ -110,8 +120,12 @@
     .consolidated-table th { background: #c5cae9; color: #283593; font-weight: 700;}
     .consolidated-table td.status-yes { color: #388e3c; font-weight: 700; }
     .consolidated-table td.status-no { color: #e53935; font-weight: 700; }
-    .celebrate {
+    .celebrate, .total-celebrate {
       text-align: center; font-size: 2.1em; color: #2e7d32; font-weight: 700;
+      margin: 18px 0 0 0; animation: popcelebrate 1.2s cubic-bezier(.3,1.5,.5,1.1) 1;
+    }
+    .total-no {
+      text-align: center; font-size: 2.1em; color: #e53935; font-weight: 700;
       margin: 18px 0 0 0; animation: popcelebrate 1.2s cubic-bezier(.3,1.5,.5,1.1) 1;
     }
     @keyframes popcelebrate {
@@ -134,8 +148,8 @@
       font-weight: 700; font-size: 1.15rem; cursor: pointer; margin-bottom: 12px; color: #3949ab;
     }
     @media (max-width: 900px) {
-      .flex-row { flex-direction: column; gap: 24px; }
-      .card { max-width: 100%; }
+      .flex-row, .common-fields-row { flex-direction: column; gap: 24px; }
+      .card, .common-fields-col { max-width: 100%; }
     }
     @media (max-width: 480px) {
       h1 { font-size: 1.8rem; }
@@ -154,8 +168,8 @@
       <button type="button" id="npsToggle" class="toggle-btn" aria-pressed="false">NPS</button>
     </div>
     <form id="mainForm" autocomplete="off" aria-live="polite">
-      <div class="flex-row">
-        <div style="flex:1 1 300px;min-width:260px;max-width:350px;">
+      <div class="common-fields-row">
+        <div class="common-fields-col">
           <div class="form-group">
             <label for="currentAge">Current Age</label>
             <input type="number" id="currentAge" value="35" min="18" max="80" required />
@@ -166,22 +180,17 @@
             <input type="number" id="retirementAge" value="60" min="18" max="80" required />
             <div class="desc">The age at which you plan to retire.</div>
           </div>
+        </div>
+        <div class="common-fields-col">
           <div class="form-group">
             <label for="inflationRate">Inflation Rate (%)</label>
             <input type="number" id="inflationRate" value="4" min="0" max="100" step="any" required />
             <div class="desc">Annual inflation rate for projections (e.g., 4%).</div>
           </div>
-        </div>
-        <div style="flex:1 1 300px;min-width:260px;max-width:350px;">
           <div class="form-group">
             <label for="monthlyExpense">Current Monthly Expense (₹)</label>
             <input type="number" id="monthlyExpense" value="50000" min="0" step="any" required />
             <div class="desc">Your current monthly living expenses.</div>
-          </div>
-          <div class="form-group">
-            <label for="targetPercent">Target % of Expense (for each stream)</label>
-            <input type="number" id="targetPercent" value="30" min="0" max="100" step="any" required />
-            <div class="desc">Percent of retirement expense you want each stream to cover.</div>
           </div>
         </div>
       </div>
@@ -189,6 +198,11 @@
         <!-- EPF Fields -->
         <div id="epfFields" class="card">
           <h2>EPF Details</h2>
+          <div class="form-group">
+            <label for="targetPercentEPF">Target % of Expense (EPF)</label>
+            <input type="number" id="targetPercentEPF" value="30" min="0" max="100" step="any" />
+            <div class="desc">Percent of retirement expense you want EPF to cover.</div>
+          </div>
           <div class="form-group">
             <label for="currentEPFBalance">Current EPF Balance (₹)</label>
             <input type="number" id="currentEPFBalance" value="200000" min="0" step="any" />
@@ -221,6 +235,11 @@
         <!-- NPS Fields -->
         <div id="npsFields" class="card">
           <h2>NPS Details</h2>
+          <div class="form-group">
+            <label for="targetPercentNPS">Target % of Expense (NPS)</label>
+            <input type="number" id="targetPercentNPS" value="30" min="0" max="100" step="any" />
+            <div class="desc">Percent of retirement expense you want NPS to cover.</div>
+          </div>
           <div class="form-group">
             <label for="currentNPSBalance">Current NPS Balance (₹)</label>
             <input type="number" id="currentNPSBalance" value="900000" min="0" step="any" />
@@ -299,24 +318,25 @@
     </div>
   </div>
   <script>
-    // Initial state: both hidden
-    document.getElementById('epfFields').classList.remove('active');
-    document.getElementById('npsFields').classList.remove('active');
-    document.getElementById('output').classList.add('hidden');
-    document.getElementById('epfToggle').onclick = function() {
-      const btn = this;
-      const card = document.getElementById('epfFields');
-      btn.classList.toggle('selected');
-      btn.setAttribute('aria-pressed', btn.classList.contains('selected'));
-      card.classList.toggle('active', btn.classList.contains('selected'));
-    };
-    document.getElementById('npsToggle').onclick = function() {
-      const btn = this;
-      const card = document.getElementById('npsFields');
-      btn.classList.toggle('selected');
-      btn.setAttribute('aria-pressed', btn.classList.contains('selected'));
-      card.classList.toggle('active', btn.classList.contains('selected'));
-    };
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('epfFields').classList.remove('active');
+      document.getElementById('npsFields').classList.remove('active');
+      document.getElementById('output').classList.add('hidden');
+      document.getElementById('epfToggle').addEventListener('click', function() {
+        const btn = this;
+        const card = document.getElementById('epfFields');
+        btn.classList.toggle('selected');
+        btn.setAttribute('aria-pressed', btn.classList.contains('selected'));
+        card.classList.toggle('active', btn.classList.contains('selected'));
+      });
+      document.getElementById('npsToggle').addEventListener('click', function() {
+        const btn = this;
+        const card = document.getElementById('npsFields');
+        btn.classList.toggle('selected');
+        btn.setAttribute('aria-pressed', btn.classList.contains('selected'));
+        card.classList.toggle('active', btn.classList.contains('selected'));
+      });
+    });
 
     function toCurrency(n) {
       return "₹ " + n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
@@ -332,6 +352,12 @@
     function getCelebrate() {
       return `<div class="celebrate">🎉 Congratulations!<br>Your retirement plan is on track!</div>`;
     }
+    function getTotalCelebrate() {
+      return `<div class="total-celebrate">🎉 <b>Combined Target Achieved!</b> Your total projected income meets your combined retirement goals!</div>`;
+    }
+    function getTotalNo() {
+      return `<div class="total-no">⚠️ <b>Combined Target Not Met</b><br>Increase your contributions or adjust your targets to meet your overall retirement goal.</div>`;
+    }
     document.getElementById('mainForm').addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -339,7 +365,7 @@
       const retirementAge = Number(document.getElementById('retirementAge').value);
       const inflationRate = Number(document.getElementById('inflationRate').value) / 100;
       const monthlyExpense = Number(document.getElementById('monthlyExpense').value);
-      const targetPercent = Number(document.getElementById('targetPercent').value) / 100;
+
       const yearsToRetirement = retirementAge - currentAge;
       const showEPF = document.getElementById('epfToggle').classList.contains('selected');
       const showNPS = document.getElementById('npsToggle').classList.contains('selected');
@@ -354,6 +380,7 @@
       let epfResults = null, npsResults = null, suggestionHtml = '', celebrateHtml = '';
 
       if (showEPF) {
+        const targetPercent = Number(document.getElementById('targetPercentEPF').value) / 100;
         const currentEPFBalance = Number(document.getElementById('currentEPFBalance').value) || 0;
         let employeeContribution = Number(document.getElementById('employeeContribution').value) || 0;
         let employerContribution = Number(document.getElementById('employerContribution').value) || 0;
@@ -394,6 +421,7 @@
       }
 
       if (showNPS) {
+        const targetPercent = Number(document.getElementById('targetPercentNPS').value) / 100;
         const monthsToRetirement = yearsToRetirement * 12;
         const currentNPSBalance = Number(document.getElementById('currentNPSBalance').value) || 0;
         const monthlyContribution = Number(document.getElementById('monthlyContributionNPS').value) || 0;
@@ -443,7 +471,11 @@
 
       let consolidatedHtml = '';
       let allYes = true;
+      let totalProjected = 0, totalTarget = 0;
       if (epfResults || npsResults) {
+        totalProjected = (epfResults ? epfResults.projectedMonthlyIncome : 0) + (npsResults ? npsResults.projectedMonthlyIncome : 0);
+        totalTarget = (epfResults ? epfResults.targetIncome : 0) + (npsResults ? npsResults.targetIncome : 0);
+
         consolidatedHtml = `
         <h2 style="text-align:center;margin-bottom:16px;">Consolidated Retirement Overview</h2>
         <table class="consolidated-table" role="table" aria-label="Consolidated retirement overview">
@@ -469,34 +501,34 @@
               ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(epfResults.inflationAdjustedExpense))}</td>` : ''}
             </tr>
             <tr>
-              <td>Target Income (${(targetPercent * 100).toFixed(0)}% of expense)</td>
+              <td>Target Income</td>
               ${epfResults ? `<td>${toCurrency(Math.round(epfResults.targetIncome))}</td>` : ''}
               ${npsResults ? `<td>${toCurrency(Math.round(npsResults.targetIncome))}</td>` : ''}
-              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(epfResults.targetIncome + npsResults.targetIncome))}</td>` : ''}
+              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(totalTarget))}</td>` : ''}
             </tr>
             <tr>
               <td>Projected Corpus at Retirement</td>
               ${epfResults ? `<td>${toCurrency(Math.round(epfResults.corpus))}</td>` : ''}
               ${npsResults ? `<td>${toCurrency(Math.round(npsResults.corpus))}</td>` : ''}
-              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(epfResults.corpus + npsResults.corpus))}</td>` : ''}
+              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round((epfResults.corpus || 0) + (npsResults.corpus || 0)))}</td>` : ''}
             </tr>
             <tr>
               <td>Inflation-Adjusted Corpus (Today's Value)</td>
               ${epfResults ? `<td>${toCurrency(Math.round(epfResults.inflationAdjustedCorpus))}</td>` : ''}
               ${npsResults ? `<td>${toCurrency(Math.round(npsResults.inflationAdjustedCorpus))}</td>` : ''}
-              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(epfResults.inflationAdjustedCorpus + npsResults.inflationAdjustedCorpus))}</td>` : ''}
+              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round((epfResults.inflationAdjustedCorpus || 0) + (npsResults.inflationAdjustedCorpus || 0)))}</td>` : ''}
             </tr>
             <tr>
               <td>Projected Monthly Income</td>
               ${epfResults ? `<td>${toCurrency(Math.round(epfResults.projectedMonthlyIncome))}</td>` : ''}
               ${npsResults ? `<td>${toCurrency(Math.round(npsResults.projectedMonthlyIncome))}</td>` : ''}
-              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(epfResults.projectedMonthlyIncome + npsResults.projectedMonthlyIncome))}</td>` : ''}
+              ${(epfResults && npsResults) ? `<td>${toCurrency(Math.round(totalProjected))}</td>` : ''}
             </tr>
             <tr>
               <td>Is Contribution Enough?</td>
               ${epfResults ? `<td class="status-${epfResults.isEnough.toLowerCase()}">${epfResults.isEnough}</td>` : ''}
               ${npsResults ? `<td class="status-${npsResults.isEnough.toLowerCase()}">${npsResults.isEnough}</td>` : ''}
-              ${(epfResults && npsResults) ? `<td class="status-${(epfResults.projectedMonthlyIncome + npsResults.projectedMonthlyIncome) >= (epfResults.targetIncome + npsResults.targetIncome) ? 'yes' : 'no'}">${(epfResults.projectedMonthlyIncome + npsResults.projectedMonthlyIncome) >= (epfResults.targetIncome + npsResults.targetIncome) ? 'Yes' : 'No'}</td>` : ''}
+              ${(epfResults && npsResults) ? `<td class="status-${totalProjected >= totalTarget ? 'yes' : 'no'}">${totalProjected >= totalTarget ? 'Yes' : 'No'}</td>` : ''}
             </tr>
           </tbody>
         </table>
@@ -509,7 +541,14 @@
           consolidatedHtml += getSuggestion(npsResults.shortfall, "nps");
           allYes = false;
         }
-        if (allYes) {
+        // Show total celebration/No animation
+        if (epfResults && npsResults) {
+          if (totalProjected >= totalTarget) {
+            consolidatedHtml += getTotalCelebrate();
+          } else {
+            consolidatedHtml += getTotalNo();
+          }
+        } else if (allYes) {
           consolidatedHtml += getCelebrate();
         }
       }
