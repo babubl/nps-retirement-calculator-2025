@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NPS Retirement Income Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 32px 28px 28px 28px;
+      border-radius: 18px;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #1a237e;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      color: #333;
+      font-weight: 500;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #b0bec5;
+      border-radius: 4px;
+      font-size: 1rem;
+      background: #f6f8fa;
+      transition: border-color 0.2s;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]:focus {
+      border-color: #3949ab;
+      outline: none;
+    }
+    .desc {
+      font-size: 0.92em;
+      color: #607d8b;
+      margin-bottom: 8px;
+      margin-top: 2px;
+    }
+    button {
+      width: 100%;
+      background: linear-gradient(90deg, #3949ab 0%, #1976d2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 13px 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #1976d2 0%, #3949ab 100%);
+    }
+    .output {
+      margin-top: 32px;
+      background: #f1f8e9;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px #dcedc8;
+    }
+    .output h2 {
+      margin-top: 0;
+      color: #2e7d32;
+      font-size: 1.2em;
+    }
+    .output-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 1.04em;
+    }
+    .output-table th, .output-table td {
+      padding: 7px 7px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .output-table th {
+      background: #e3f2fd;
+      text-align: left;
+      color: #1976d2;
+      font-weight: bold;
+    }
+    .output-table td.value {
+      text-align: right;
+      color: #1976d2;
+      font-weight: bold;
+    }
+    .flash-yes {
+      animation: flash-green 1.2s infinite alternate;
+      background: #c8e6c9;
+      color: #1b5e20 !important;
+      font-weight: bold;
+      font-size: 1.1em;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .flash-no {
+      animation: flash-red 1.2s infinite alternate;
+      background: #ffcdd2;
+      color: #b71c1c !important;
+      font-weight: bold;
+      font-size: 1.1em;
+      border-radius: 5px;
+      text-align: center;
+    }
+    @keyframes flash-green {
+      0% { box-shadow: 0 0 0px #43a047; }
+      100% { box-shadow: 0 0 16px #43a047; }
+    }
+    @keyframes flash-red {
+      0% { box-shadow: 0 0 0px #e53935; }
+      100% { box-shadow: 0 0 16px #e53935; }
+    }
+    .gap-info {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 1.07em;
+      background: #fff3e0;
+      color: #ff6f00;
+      border: 1px solid #ffe0b2;
+      text-align: center;
+      font-weight: 500;
+    }
+    .gap-info.positive {
+      background: #e8f5e9;
+      color: #388e3c;
+      border: 1px solid #a5d6a7;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 13px 4vw 20px 4vw; }
+      h1 { font-size: 1.3em; }
+      .output-table th, .output-table td { font-size: 0.93em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>NPS Retirement Income Calculator</h1>
+    <form id="npsForm" autocomplete="off">
+      <div class="form-group">
+        <label for="currentAge">Current Age</label>
+        <input type="number" id="currentAge" value="40" min="18" max="80" required>
+        <div class="desc">Enter your current age in years</div>
+      </div>
+      <div class="form-group">
+        <label for="retirementAge">Retirement Age</label>
+        <input type="number" id="retirementAge" value="60" min="18" max="80" required>
+        <div class="desc">Age when you plan to retire</div>
+      </div>
+      <div class="form-group">
+        <label for="currentNPSBalance">Current NPS Balance (₹)</label>
+        <input type="number" id="currentNPSBalance" value="900000" min="0" step="any" required>
+        <div class="desc">Total amount in your NPS account now</div>
+      </div>
+      <div class="form-group">
+        <label for="monthlyContribution">Monthly NPS Contribution (₹)</label>
+        <input type="number" id="monthlyContribution" value="22000" min="0" step="any" required>
+        <div class="desc">Your monthly NPS contribution</div>
+      </div>
+      <div class="form-group">
+        <label for="monthlyExpense">Current Monthly Expense (₹)</label>
+        <input type="number" id="monthlyExpense" value="60000" min="0" step="any" required>
+        <div class="desc">Your current monthly living expenses</div>
+      </div>
+      <div class="form-group">
+        <label for="inflationRate">Inflation Rate (%)</label>
+        <input type="number" id="inflationRate" value="6" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual inflation rate</div>
+      </div>
+      <div class="form-group">
+        <label for="npsTarget">NPS Target % of Expense</label>
+        <input type="number" id="npsTarget" value="30" min="0" max="100" step="any" required>
+        <div class="desc">Percent of retirement expense you want NPS to cover</div>
+      </div>
+      <div class="form-group">
+        <label for="equityReturn">Equity Return (%)</label>
+        <input type="number" id="equityReturn" value="10" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual return from equity</div>
+      </div>
+      <div class="form-group">
+        <label for="corporateBondReturn">Corporate Bond Return (%)</label>
+        <input type="number" id="corporateBondReturn" value="8" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual return from corporate bonds</div>
+      </div>
+      <div class="form-group">
+        <label for="governmentBondReturn">Government Bond Return (%)</label>
+        <input type="number" id="governmentBondReturn" value="6" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual return from government securities</div>
+      </div>
+      <div class="form-group">
+        <label for="equityAllocation">Equity Allocation (%)</label>
+        <input type="number" id="equityAllocation" value="75" min="0" max="100" step="any" required>
+        <div class="desc">Percent of NPS in equity (Scheme E)</div>
+      </div>
+      <div class="form-group">
+        <label for="corporateAllocation">Corporate Allocation (%)</label>
+        <input type="number" id="corporateAllocation" value="20" min="0" max="100" step="any" required>
+        <div class="desc">Percent of NPS in corporate bonds (Scheme C)</div>
+      </div>
+      <div class="form-group">
+        <label for="governmentAllocation">Government Allocation (%)</label>
+        <input type="number" id="governmentAllocation" value="5" min="0" max="100" step="any" required>
+        <div class="desc">Percent of NPS in government securities (Scheme G)</div>
+      </div>
+      <div class="form-group">
+        <label for="swpReturn">SWP Return (%)</label>
+        <input type="number" id="swpReturn" value="10" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual return on SWP corpus</div>
+      </div>
+      <div class="form-group">
+        <label for="swpWithdrawalRate">SWP Withdrawal Rate (%)</label>
+        <input type="number" id="swpWithdrawalRate" value="4" min="0" max="100" step="any" required>
+        <div class="desc">Annual withdrawal rate from SWP corpus</div>
+      </div>
+      <div class="form-group">
+        <label for="annuityReturn">Annuity Return (%)</label>
+        <input type="number" id="annuityReturn" value="5" min="0" max="100" step="any" required>
+        <div class="desc">Expected annual return from annuity corpus</div>
+      </div>
+      <button type="submit">Calculate</button>
+    </form>
+    <div class="output" id="output"></div>
+  </div>
+  <script>
+    function toCurrency(n) {
+      return "₹ " + n.toLocaleString('en-IN', {maximumFractionDigits: 0});
+    }
+    document.getElementById('npsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Inputs
+      const currentAge = Number(document.getElementById('currentAge').value);
+      const retirementAge = Number(document.getElementById('retirementAge').value);
+      const currentNPSBalance = Number(document.getElementById('currentNPSBalance').value);
+      const monthlyContribution = Number(document.getElementById('monthlyContribution').value);
+      const monthlyExpense = Number(document.getElementById('monthlyExpense').value);
+      const inflationRate = Number(document.getElementById('inflationRate').value) / 100;
+      const npsTarget = Number(document.getElementById('npsTarget').value) / 100;
+      const equityReturn = Number(document.getElementById('equityReturn').value) / 100;
+      const corporateBondReturn = Number(document.getElementById('corporateBondReturn').value) / 100;
+      const governmentBondReturn = Number(document.getElementById('governmentBondReturn').value) / 100;
+      const equityAllocation = Number(document.getElementById('equityAllocation').value) / 100;
+      const corporateAllocation = Number(document.getElementById('corporateAllocation').value) / 100;
+      const governmentAllocation = Number(document.getElementById('governmentAllocation').value) / 100;
+      const swpReturn = Number(document.getElementById('swpReturn').value) / 100;
+      const swpWithdrawalRate = Number(document.getElementById('swpWithdrawalRate').value) / 100;
+      const annuityReturn = Number(document.getElementById('annuityReturn').value) / 100;
+
+      // Calculations
+      const yearsToRetirement = retirementAge - currentAge;
+      const monthsToRetirement = yearsToRetirement * 12;
+
+      // Blended Return
+      const blendedReturn = 
+        equityReturn * equityAllocation +
+        corporateBondReturn * corporateAllocation +
+        governmentBondReturn * governmentAllocation;
+
+      // Monthly Return
+      const monthlyReturn = Math.pow(1 + blendedReturn, 1/12) - 1;
+
+      // FV of current corpus
+      const fvCurrentCorpus = currentNPSBalance * Math.pow(1 + monthlyReturn, monthsToRetirement);
+
+      // FV of monthly contributions (ordinary annuity, no escalation)
+      const fvContributions = monthlyContribution * (Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn;
+
+      // Total NPS corpus
+      const totalNPSCorpus = fvCurrentCorpus + fvContributions;
+
+      // SWP/Annuity corpus
+      const swpCorpus = totalNPSCorpus * 0.6;
+      const annuityCorpus = totalNPSCorpus * 0.4;
+
+      // Monthly SWP income
+      const monthlySWPIncome = swpCorpus * (swpWithdrawalRate/12);
+
+      // Monthly Annuity income
+      const monthlyAnnuityIncome = annuityCorpus * (annuityReturn/12);
+
+      // Total Monthly NPS Income
+      const totalMonthlyNPSIncome = monthlySWPIncome + monthlyAnnuityIncome;
+
+      // Inflation Adjusted Expense
+      const inflationAdjustedExpense = monthlyExpense * Math.pow(1 + inflationRate, yearsToRetirement);
+
+      // Target Monthly Income from NPS
+      const targetMonthlyNPSIncome = npsTarget * inflationAdjustedExpense;
+
+      // Is Contribution Enough?
+      const isEnough = totalMonthlyNPSIncome >= targetMonthlyNPSIncome ? "Yes" : "No";
+
+      // Calculate monthly contribution gap
+      let neededMonthlyContribution = 0;
+      if (totalMonthlyNPSIncome < targetMonthlyNPSIncome) {
+        // Estimate extra monthly contribution needed
+        const corpusNeeded = targetMonthlyNPSIncome / ((0.6 * swpWithdrawalRate / 12) + (0.4 * annuityReturn / 12));
+        const extraCorpusNeeded = corpusNeeded - totalNPSCorpus;
+        if (extraCorpusNeeded > 0) {
+          neededMonthlyContribution = extraCorpusNeeded * monthlyReturn / (Math.pow(1 + monthlyReturn, monthsToRetirement) - 1);
+        }
+      } else {
+        // Surplus income per month
+        neededMonthlyContribution = totalMonthlyNPSIncome - targetMonthlyNPSIncome;
+      }
+
+      // Output Table
+      document.getElementById('output').innerHTML = `
+        <h2>Will NPS Meet My Retirement Income Needs?</h2>
+        <table class="output-table">
+          <tr>
+            <th>Metric</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Years to Retirement</td>
+            <td class="value">${yearsToRetirement}</td>
+          </tr>
+          <tr>
+            <td>Blended Return (annual)</td>
+            <td class="value">${(blendedReturn*100).toFixed(2)}%</td>
+          </tr>
+          <tr>
+            <td>Projected NPS Corpus at Retirement</td>
+            <td class="value">${toCurrency(Math.round(totalNPSCorpus))}</td>
+          </tr>
+          <tr>
+            <td>Projected Monthly NPS Income</td>
+            <td class="value">${toCurrency(Math.round(totalMonthlyNPSIncome))}</td>
+          </tr>
+          <tr>
+            <td>Inflation-Adjusted Retirement Expense</td>
+            <td class="value">${toCurrency(Math.round(inflationAdjustedExpense))}</td>
+          </tr>
+          <tr>
+            <td>Target NPS Income (${(npsTarget*100).toFixed(0)}% of expense)</td>
+            <td class="value">${toCurrency(Math.round(targetMonthlyNPSIncome))}</td>
+          </tr>
+          <tr>
+            <td>Is Contribution Enough?</td>
+            <td class="value ${isEnough === "Yes" ? "flash-yes" : "flash-no"}">${isEnough}</td>
+          </tr>
+        </table>
+        ${
+          isEnough === "No"
+          ? `<div class="gap-info">
+                You need to increase your monthly contribution by <b>${toCurrency(Math.round(neededMonthlyContribution))}</b> to meet your target.
+             </div>`
+          : `<div class="gap-info positive">
+                You have a surplus of <b>${toCurrency(Math.round(neededMonthlyContribution))}</b> per month above your target!
+             </div>`
+        }
+        <div style="margin-top:8px;color:#888;font-size:0.98em;">
+          <b>Note:</b> These are estimates. Please consult a financial advisor before making investment decisions.
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
