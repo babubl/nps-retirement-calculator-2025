@@ -4,7 +4,7 @@ A simple, interactive web calculator to help you estimate whether your NPS (Nati
 
 ## 🚀 Try it Live
 
-[Open the Calculator](https://babubl.github.io/nps-retirement-calculator/)
+[Open the Calculator](https://babubl.github.io/nps-retirement-calculator-2025/)
 
 ## ✨ Features
 
