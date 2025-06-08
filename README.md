@@ -1,54 +1,74 @@
-# NPS Retirement Income Calculator
+EPF & NPS Interactive Retirement Calculator
+A modern, interactive web calculator for Indian retirement planning using EPF and NPS.
+Easily compare, combine, and project your future retirement income with a beautiful, responsive interface and actionable feedback.
 
-A simple, interactive web calculator to help you estimate whether your NPS (National Pension System) investments will meet your retirement income needs.
+✨ Features
+Common Fields Side-by-Side: Enter your age, retirement age, inflation, and expenses in a clean two-column layout.
 
-## 🚀 Try it Live
+EPF & NPS Toggles: Enable either or both plans with intuitive toggle buttons. Each plan’s questionnaire appears/disappears instantly.
 
-[Open the Calculator](https://babubl.github.io/nps-retirement-calculator-2025/)
+Per-Plan Target %: Set different target percentages of retirement expenses for EPF and NPS.
 
-## ✨ Features
+Side-by-Side Questionnaires: When both plans are selected, their forms appear side by side (not stacked).
 
-- Easy-to-use web interface
-- Calculates your projected NPS corpus at retirement
-- Estimates monthly NPS income vs. your inflation-adjusted retirement expenses
-- Tells you if your current NPS contribution is enough to meet your target
-- Shows how much more (or less) you need to contribute to reach your goal
+No Number Input Arrows: Cleaner number fields for a better user experience.
 
-## 📋 How to Use
+No Output Until Calculate: Results only appear after clicking Calculate—no empty space on load.
 
-1. Enter your details in the input fields:
-    - Current age, retirement age
-    - Current NPS balance and monthly contribution
-    - Current monthly expenses, inflation rate, and target coverage %
-    - Expected returns and asset allocation
-    - SWP and annuity parameters
-2. Click **Calculate**.
-3. See your projected NPS corpus, monthly income, and whether you’re on track.
+Combined Interactive Results: See a clear, consolidated table and a big animated "Yes" or "No" message for your total plan.
 
-## 🧮 What This Calculator Shows
+Actionable Guidance: If your plan falls short, get specific suggestions on how much to increase your contributions.
 
-- Years to retirement
-- Blended return based on your asset allocation
-- Projected NPS corpus at retirement
-- Projected monthly NPS income
-- Inflation-adjusted retirement expense
-- Target NPS income (based on your chosen %)
-- Whether your current contribution is enough, and by how much you need to adjust
+Educational Help Section: Brief, friendly explanations of EPF and NPS, including when to use each.
 
-## 📣 Share
+Responsive Design: Works great on desktop and mobile.
 
-Feel free to share this tool with your peers or on social media!
+🚀 Getting Started
+Clone or download this repository.
 
-## 🛠️ How to Run Locally
+Open index.html in your browser—no backend or build required!
 
-1. Download or clone this repository.
-2. Open `index.html` in your browser.
+Fill in your details, select EPF and/or NPS, and click Calculate.
 
-## 🙏 Acknowledgements
+Review your interactive results and suggestions.
 
-- [GitHub Pages](https://pages.github.com/) for free web hosting
-- [Perplexity AI](https://www.perplexity.ai/) for code assistance
+🖥️ Screenshots
+Add screenshots here to show the side-by-side fields, toggles, and result animations.
 
----
+📋 Example Usage
+Select EPF and/or NPS using the buttons at the top.
 
-**Disclaimer:** This calculator is for informational purposes only and does not constitute financial advice. Please consult a financial advisor before making investment decisions.
+Enter your details in the common fields (side by side).
+
+Set your target % of expense for each plan individually.
+
+Fill in the plan-specific fields for EPF and/or NPS.
+
+Click Calculate to see:
+
+A consolidated table with all projections
+
+A big animated "Yes" (celebration) or "No" (actionable advice) for your total plan
+
+🧑‍💻 For Developers
+All logic and UI is in a single, well-commented index.html.
+
+No frameworks or build tools required.
+
+Uses only HTML, CSS, and vanilla JavaScript.
+
+📚 Learn More
+About EPF (epfindia.gov.in)
+
+About NPS (enps.nsdl.com)
+
+See the in-app Help section for a quick primer.
+
+🤝 Contributing
+Pull requests and suggestions are welcome!
+Please open an issue to discuss your ideas or report bugs.
+
+📄 License
+MIT License
+
+This project is designed for financial literacy and planning. Always consult a professional for personalized advice.
