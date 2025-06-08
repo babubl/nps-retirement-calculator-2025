@@ -61,21 +61,13 @@
       margin-bottom: 8px;
       margin-top: 2px;
     }
-    button {
-      width: 100%;
-      background: linear-gradient(90deg, #3949ab 0%, #1976d2 100%);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 13px 0;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background: linear-gradient(90deg, #1976d2 0%, #3949ab 100%);
+    .goal-seek {
+      margin: 18px 0 12px 0;
+      padding: 14px 18px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      color: #1976d2;
+      font-weight: 500;
     }
     .output {
       margin-top: 32px;
@@ -152,6 +144,41 @@
       color: #388e3c;
       border: 1px solid #a5d6a7;
     }
+    .tax-info {
+      margin-top: 16px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #e3f2fd;
+      color: #1976d2;
+      border: 1px solid #bbdefb;
+      text-align: center;
+      font-size: 1em;
+    }
+    .sensitivity {
+      margin-top: 18px;
+      padding: 12px;
+      background: #fffde7;
+      color: #ff8f00;
+      border-radius: 8px;
+      font-size: 0.99em;
+      border: 1px solid #ffe082;
+    }
+    .education-section {
+      margin-top: 28px;
+      background: #f9fbe7;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #616161;
+      font-size: 1em;
+      border: 1px solid #e6ee9c;
+    }
+    .education-section summary {
+      font-weight: bold;
+      color: #827717;
+      cursor: pointer;
+      font-size: 1.07em;
+      margin-bottom: 8px;
+    }
     @media (max-width: 700px) {
       .container { padding: 13px 4vw 20px 4vw; }
       h1 { font-size: 1.3em; }
@@ -163,6 +190,11 @@
   <div class="container">
     <h1>NPS Retirement Income Calculator</h1>
     <form id="npsForm" autocomplete="off">
+      <div class="goal-seek">
+        <label for="goalSeek">🎯 Want a specific NPS monthly income at retirement?</label>
+        <input type="number" id="goalSeek" placeholder="Enter your desired monthly NPS income (optional)" style="width:100%;margin-top:6px;">
+        <div class="desc">Enter your target NPS monthly income at retirement. The calculator will show the required monthly contribution.</div>
+      </div>
       <div class="form-group">
         <label for="currentAge">Current Age</label>
         <input type="number" id="currentAge" value="40" min="18" max="80" required>
@@ -246,6 +278,19 @@
       <button type="submit">Calculate</button>
     </form>
     <div class="output" id="output"></div>
+    <div class="education-section">
+      <details>
+        <summary>ℹ️ About NPS, SWP, and Annuity (Click to expand)</summary>
+        <ul>
+          <li><b>NPS Withdrawal:</b> At retirement, you can withdraw up to 60% of your corpus as a lump sum (tax-free), and at least 40% must be used to buy an annuity (regular pension).</li>
+          <li><b>Scheme E/C/G:</b> NPS lets you choose your asset allocation between Equity (E), Corporate Bonds (C), and Government Securities (G).</li>
+          <li><b>SWP:</b> Systematic Withdrawal Plan lets you withdraw a fixed amount from your lump sum corpus monthly.</li>
+          <li><b>Annuity:</b> The annuity provider pays a fixed monthly pension for life. Rates depend on age, provider, and option chosen (single/joint, with/without return of purchase price).</li>
+          <li><b>Tax Benefits:</b> NPS contributions are eligible for tax deduction under Sec 80C (up to ₹1.5 lakh) and Sec 80CCD(1B) (additional ₹50,000).</li>
+          <li><b>Risks:</b> Returns are market-linked and not guaranteed. Inflation and longevity risk should be considered.</li>
+        </ul>
+      </details>
+    </div>
   </div>
   <script>
     function toCurrency(n) {
@@ -271,6 +316,7 @@
       const swpReturn = Number(document.getElementById('swpReturn').value) / 100;
       const swpWithdrawalRate = Number(document.getElementById('swpWithdrawalRate').value) / 100;
       const annuityReturn = Number(document.getElementById('annuityReturn').value) / 100;
+      const goalSeekValue = Number(document.getElementById('goalSeek').value);
 
       // Calculations
       const yearsToRetirement = retirementAge - currentAge;
@@ -330,6 +376,63 @@
         neededMonthlyContribution = totalMonthlyNPSIncome - targetMonthlyNPSIncome;
       }
 
+      // Goal Seek: If user entered a target NPS income, calculate required monthly contribution
+      let goalSeekResult = '';
+      if (goalSeekValue && goalSeekValue > 0) {
+        const requiredCorpus = goalSeekValue / ((0.6 * swpWithdrawalRate / 12) + (0.4 * annuityReturn / 12));
+        const requiredFV = requiredCorpus - fvCurrentCorpus;
+        let reqContribution = 0;
+        if (requiredFV > 0) {
+          reqContribution = requiredFV * monthlyReturn / (Math.pow(1 + monthlyReturn, monthsToRetirement) - 1);
+        }
+        goalSeekResult = `<div class="goal-seek" style="background:#fffde7;color:#ff8f00;">
+          To get <b>${toCurrency(goalSeekValue)}</b> per month from NPS at retirement, you need to contribute <b>${toCurrency(Math.ceil(reqContribution))}</b> per month.
+        </div>`;
+      }
+
+      // Tax benefit estimation (80C + 80CCD(1B))
+      let taxBenefit = 0;
+      let eligible80C = Math.min(monthlyContribution * 12, 150000);
+      let eligible80CCD1B = Math.min(Math.max(monthlyContribution * 12 - 150000, 0), 50000);
+      taxBenefit = eligible80C + eligible80CCD1B;
+      let taxInfo = `<div class="tax-info">
+        Estimated annual tax deduction for your NPS contribution: <b>${toCurrency(taxBenefit)}</b> (Sec 80C + 80CCD(1B))
+      </div>`;
+
+      // Sensitivity analysis: +1%/-1% inflation and returns
+      function sensitivity(inflationAdj, blendedAdj) {
+        const infAdj = inflationRate + inflationAdj;
+        const blendAdj = blendedReturn + blendedAdj;
+        const monAdj = Math.pow(1 + blendAdj, 1/12) - 1;
+        const fvCurrentAdj = currentNPSBalance * Math.pow(1 + monAdj, monthsToRetirement);
+        const fvContrAdj = monthlyContribution * (Math.pow(1 + monAdj, monthsToRetirement) - 1) / monAdj;
+        const totalCorpusAdj = fvCurrentAdj + fvContrAdj;
+        const swpCorpusAdj = totalCorpusAdj * 0.6;
+        const annuityCorpusAdj = totalCorpusAdj * 0.4;
+        const monthlySWPAdj = swpCorpusAdj * (swpWithdrawalRate/12);
+        const monthlyAnnuityAdj = annuityCorpusAdj * (annuityReturn/12);
+        const totalNPSIncomeAdj = monthlySWPAdj + monthlyAnnuityAdj;
+        const inflationExpenseAdj = monthlyExpense * Math.pow(1 + infAdj, yearsToRetirement);
+        const targetNPSIncomeAdj = npsTarget * inflationExpenseAdj;
+        return {
+          totalNPSIncomeAdj,
+          targetNPSIncomeAdj
+        };
+      }
+      const sensPlus = sensitivity(0.01, 0.01);
+      const sensMinus = sensitivity(-0.01, -0.01);
+
+      let sensitivityHtml = `
+        <div class="sensitivity">
+          <b>Sensitivity Analysis:</b><br>
+          <span style="color:#388e3c;">If inflation and returns are <b>1% higher</b>:</span>
+          <br>Projected NPS income: <b>${toCurrency(Math.round(sensPlus.totalNPSIncomeAdj))}</b> | Target: <b>${toCurrency(Math.round(sensPlus.targetNPSIncomeAdj))}</b>
+          <br>
+          <span style="color:#d84315;">If inflation and returns are <b>1% lower</b>:</span>
+          <br>Projected NPS income: <b>${toCurrency(Math.round(sensMinus.totalNPSIncomeAdj))}</b> | Target: <b>${toCurrency(Math.round(sensMinus.targetNPSIncomeAdj))}</b>
+        </div>
+      `;
+
       // Output Table
       document.getElementById('output').innerHTML = `
         <h2>Will NPS Meet My Retirement Income Needs?</h2>
@@ -376,6 +479,9 @@
                 You have a surplus of <b>${toCurrency(Math.round(neededMonthlyContribution))}</b> per month above your target!
              </div>`
         }
+        ${goalSeekResult}
+        ${taxInfo}
+        ${sensitivityHtml}
         <div style="margin-top:8px;color:#888;font-size:0.98em;">
           <b>Note:</b> These are estimates based on latest 5-year averages (2020–2025). Please consult a financial advisor before making investment decisions.
         </div>
