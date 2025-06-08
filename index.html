@@ -166,7 +166,7 @@
       <div class="form-group">
         <label for="currentAge">Current Age</label>
         <input type="number" id="currentAge" value="40" min="18" max="80" required>
-        <div class="desc">Enter your current age in years</div>
+        <div class="desc">Your current age in years</div>
       </div>
       <div class="form-group">
         <label for="retirementAge">Retirement Age</label>
@@ -190,8 +190,8 @@
       </div>
       <div class="form-group">
         <label for="inflationRate">Inflation Rate (%)</label>
-        <input type="number" id="inflationRate" value="6" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual inflation rate</div>
+        <input type="number" id="inflationRate" value="4" min="0" max="100" step="any" required>
+        <div class="desc">Latest annual inflation rate in India is 3.16% (Apr 2025). 5-year average is ~4%. [Source: Trading Economics, MoSPI]</div>
       </div>
       <div class="form-group">
         <label for="npsTarget">NPS Target % of Expense</label>
@@ -200,18 +200,18 @@
       </div>
       <div class="form-group">
         <label for="equityReturn">Equity Return (%)</label>
-        <input type="number" id="equityReturn" value="10" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual return from equity</div>
+        <input type="number" id="equityReturn" value="12" min="0" max="100" step="any" required>
+        <div class="desc">Scheme E (Equity): 5-year average annual return is 11–14%. [Source: NPS Trust, 2025]</div>
       </div>
       <div class="form-group">
         <label for="corporateBondReturn">Corporate Bond Return (%)</label>
         <input type="number" id="corporateBondReturn" value="8" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual return from corporate bonds</div>
+        <div class="desc">Scheme C (Corporate Bonds): 5-year average annual return is 7–9%. [Source: NPS Trust, 2025]</div>
       </div>
       <div class="form-group">
         <label for="governmentBondReturn">Government Bond Return (%)</label>
-        <input type="number" id="governmentBondReturn" value="6" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual return from government securities</div>
+        <input type="number" id="governmentBondReturn" value="7" min="0" max="100" step="any" required>
+        <div class="desc">Scheme G (Government Securities): 5-year average annual return is 6–7.5%. [Source: NPS Trust, 2025]</div>
       </div>
       <div class="form-group">
         <label for="equityAllocation">Equity Allocation (%)</label>
@@ -230,8 +230,8 @@
       </div>
       <div class="form-group">
         <label for="swpReturn">SWP Return (%)</label>
-        <input type="number" id="swpReturn" value="10" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual return on SWP corpus</div>
+        <input type="number" id="swpReturn" value="9" min="0" max="100" step="any" required>
+        <div class="desc">Average 5-year return for SWP (hybrid/balanced funds) is 8–10%. [Source: Mutual fund data, 2025]</div>
       </div>
       <div class="form-group">
         <label for="swpWithdrawalRate">SWP Withdrawal Rate (%)</label>
@@ -240,8 +240,8 @@
       </div>
       <div class="form-group">
         <label for="annuityReturn">Annuity Return (%)</label>
-        <input type="number" id="annuityReturn" value="5" min="0" max="100" step="any" required>
-        <div class="desc">Expected annual return from annuity corpus</div>
+        <input type="number" id="annuityReturn" value="6" min="0" max="100" step="any" required>
+        <div class="desc">Current annuity rates in India are 5–6.5%. [Source: LIC, HDFC, SBI Life, 2025]</div>
       </div>
       <button type="submit">Calculate</button>
     </form>
@@ -377,7 +377,7 @@
              </div>`
         }
         <div style="margin-top:8px;color:#888;font-size:0.98em;">
-          <b>Note:</b> These are estimates. Please consult a financial advisor before making investment decisions.
+          <b>Note:</b> These are estimates based on latest 5-year averages (2020–2025). Please consult a financial advisor before making investment decisions.
         </div>
       `;
     });
